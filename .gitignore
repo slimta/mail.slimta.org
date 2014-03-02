@@ -1,3 +1,5 @@
+attributes/*.rb
+
 *.gem
 *.rbc
 .bundle
