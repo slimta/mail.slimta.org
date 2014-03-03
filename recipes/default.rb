@@ -37,9 +37,9 @@ directory '/etc/slimta/certs' do
   action :create
 end
 
-['cert', 'key'].each do |file|
-  file ::File.join('/etc/slimta/certs', "#{ file }.pem") do
-    contents node['mail.slimta.org']['ssl'][file]
+['cert', 'key'].each do |ssl_file|
+  file ::File.join('/etc/slimta/certs', "#{ ssl_file }.pem") do
+    content node['mail.slimta.org']['ssl'][ssl_file]
     mode 0644
     action :create
     notifies :restart, 'service[slimta-edge]'
