@@ -38,7 +38,7 @@ directory '/etc/slimta/certs' do
 end
 
 ['cert', 'key'].each do |file|
-  cookbook_file ::File.join('/etc/slimta/certs', "#{ file }.pem") do
+  file ::File.join('/etc/slimta/certs', "#{ file }.pem") do
     contents node['mail.slimta.org']['ssl'][file]
     mode 0644
     action :create
