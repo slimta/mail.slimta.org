@@ -49,12 +49,12 @@ end
 
 service 'slimta-edge' do
   action [:start, :enable]
-  subscribes :restart, 'slimta_app[slimta-edge]'
+  subscribes :restart, 'slimta_app[edge]'
 end
 
 service 'slimta-relay' do
   action [:start, :enable]
-  subscribes :restart, 'slimta_app[slimta-relay]'
+  subscribes :restart, 'slimta_app[relay]'
 end
 
 # vim:sw=2:ts=2:sts=2:et:ai:ft=ruby:
