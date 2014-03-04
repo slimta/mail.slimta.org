@@ -49,6 +49,15 @@ edge = {
     'port' => 8025,
   },
 
+  'inbound_ssl' => {
+    'type' => 'smtp',
+    'queue' => 'inbound',
+    'rules' => 'inbound',
+    'interface' => '',
+    'port' => 465,
+    'tls_immediately' => true,
+  },
+
   'outbound' => {
     'type' => 'smtp',
     'queue' => 'outbound',
