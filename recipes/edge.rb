@@ -91,7 +91,7 @@ queue = {
       {'type' => 'add_messageid_header'},
       {'type' => 'add_received_header'},
       {
-        'type' => 'forward', 
+        'type' => 'forward',
         'everything' => node['mail.slimta.org']['forward_address']
       },
     ],
@@ -119,6 +119,12 @@ slimta_app 'edge' do
   edge edge
   rules rules
   queue queue
+
+  notifies :restart, 'service[slimta-edge]'
+end
+
+service 'slimta-edge' do
+  action [:start, :enable]
 end
 
 # vim:sw=2:ts=2:sts=2:et:ai:ft=ruby:

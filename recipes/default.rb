@@ -23,6 +23,8 @@
 # THE SOFTWARE.
 #
 
+node.set['slimta']['services'] = ['slimta-edge', 'slimta-relay']
+
 include_recipe 'slimta'
 
 package 'redis-server' do
@@ -45,16 +47,6 @@ end
     notifies :restart, 'service[slimta-edge]'
     notifies :restart, 'service[slimta-relay]'
   end
-end
-
-service 'slimta-edge' do
-  action [:start, :enable]
-  subscribes :restart, 'slimta_app[edge]'
-end
-
-service 'slimta-relay' do
-  action [:start, :enable]
-  subscribes :restart, 'slimta_app[relay]'
 end
 
 # vim:sw=2:ts=2:sts=2:et:ai:ft=ruby:

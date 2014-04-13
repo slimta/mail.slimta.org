@@ -59,6 +59,12 @@ slimta_app 'relay' do
   tls tls
   queue queue
   relay relay
+
+  notifies :restart, 'service[slimta-relay]'
+end
+
+service 'slimta-relay' do
+  action [:start, :enable]
 end
 
 # vim:sw=2:ts=2:sts=2:et:ai:ft=ruby:
