@@ -1,0 +1,36 @@
+
+default['slimta']['install_extensions'] = [
+  'python-slimta-spf',
+  'python-slimta-redisstorage',
+]
+
+default['slimta']['version_lock'] = {
+  'python-slimta' => '0.3.23',
+  'slimta' => '0.2.1',
+  'python-slimta-spf' => '0.1.1',
+  'python-slimta-redisstorage' => '0.1.5',
+}
+
+default['mail.slimta.org']['allowed_addresses'] = [
+  'postmaster@slimta.org',
+  'abuse@slimta.org',
+  'user@slimta.org',
+]
+
+default['mail.slimta.org']['send_credentials'] = {
+  'user@slimta.org' => 'xxxxYYYY1234',
+}
+
+default['mail.slimta.org']['forward_address'] = 'user@example.com'
+
+default['mail.slimta.org']['ssl']['cert'] = <<EOF
+-----BEGIN CERTIFICATE-----
+-----END CERTIFICATE-----
+EOF
+
+default['mail.slimta.org']['ssl']['key'] = <<EOF
+-----BEGIN RSA PRIVATE KEY-----
+-----END RSA PRIVATE KEY-----
+EOF
+
+# vim:sw=2:ts=2:sts=2:et:ai:ft=ruby:
