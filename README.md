@@ -9,4 +9,8 @@ you'll need to create the attributes:
 
 This file defines some attributes used by the mail server.
 
+Copy the provided `attributes/default.rb.example` and fill in the expected
+values to try it out.
+
 [1]: https://github.com/slimta/slimta-cookbook
+
