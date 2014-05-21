@@ -72,6 +72,7 @@ rules = {
     'banner' => '{fqdn} ESMTP slimta.org Mail Delivery Agent',
     'dnsbl' => 'zen.spamhaus.org',
     'reject_spf' => ['fail'],
+    'reject_spam' => 'spamassassin',
     'only_recipients' => node['mail.slimta.org']['allowed_addresses'],
   },
 
