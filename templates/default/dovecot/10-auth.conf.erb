@@ -1,0 +1,15 @@
+# conf.d/10-auth.conf
+# This file is owned by Chef, changes will be overwritten.
+
+auth_mechanisms = plain
+
+passdb {
+  driver = dict
+  args = /etc/dovecot/dovecot-dict-auth.conf
+}
+
+userdb {
+  driver = dict
+  args = /etc/dovecot/dovecot-dict-auth.conf
+}
+

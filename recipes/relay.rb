@@ -28,13 +28,13 @@
 queue = {
   'inbound' => {
     'type' => 'redis',
-    'prefix' => 'slimta:inbound:',
-    'relay' => 'outbound',
+    'prefix' => node['mail.slimta.org']['redis_prefixes']['inbound'],
+    'relay' => 'inbound',
   },
 
   'outbound' => {
     'type' => 'redis',
-    'prefix' => 'slimta:outbound:',
+    'prefix' => node['mail.slimta.org']['redis_prefixes']['outbound'],
     'relay' => 'outbound',
     'retry' => {
       'maximum' => 3,
@@ -44,9 +44,13 @@ queue = {
 }
 
 relay = {
+  'inbound' => {
+    'type' => 'dovecot',
+    'path' => '/usr/lib/dovecot/dovecot-lda',
+  },
+
   'outbound' => {
     'type' => 'mx',
-    'ehlo_as' => 'slimta.org',
   },
 }
 
@@ -55,6 +59,8 @@ slimta_app 'relay' do
   service_name 'slimta-relay'
   conf_files :logging => 'logging.conf', :rules => 'rules.conf'
   log_file 'slimta.log'
+  user 'slimta'
+  group 'mail'
 
   tls tls
   queue queue

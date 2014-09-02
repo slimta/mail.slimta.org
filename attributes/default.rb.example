@@ -21,7 +21,15 @@ default['mail.slimta.org']['send_credentials'] = {
   'user@slimta.org' => 'xxxxYYYY1234',
 }
 
-default['mail.slimta.org']['forward_address'] = 'user@example.com'
+default['mail.slimta.org']['forward_mapping'] = {
+  '.*' => 'user@example.com',
+}
+
+default['mail.slimta.org']['redis_prefixes'].tap do |prefixes|
+  prefixes['inbound'] = 'slimta:inbound:'
+  prefixes['outbound'] = 'slimta:outbound:'
+  prefixes['mailboxes'] = 'slimta:mailbox:'
+end
 
 default['mail.slimta.org']['ssl']['cert'] = <<EOF
 -----BEGIN CERTIFICATE-----

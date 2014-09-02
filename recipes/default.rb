@@ -31,6 +31,18 @@ package 'redis-server' do
   action :install
 end
 
+user 'slimta' do
+  shell '/bin/false'
+  home '/nonexistent'
+  comment 'slimta user'
+end
+
+group 'mail' do
+  append true
+  members 'slimta'
+  action :modify
+end
+
 include_recipe 'mail.slimta.org::edge'
 include_recipe 'mail.slimta.org::relay'
 

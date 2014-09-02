@@ -6,4 +6,8 @@ description      'Installs/Configures mail.slimta.org'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.0.0'
 
+supports         'debian'
+supports         'ubuntu'
+supports         'linuxmint'
+
 depends          'slimta'

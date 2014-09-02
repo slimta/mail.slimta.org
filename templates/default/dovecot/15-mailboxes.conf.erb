@@ -1,0 +1,27 @@
+# conf.d/15-mailboxes.conf
+# This file is owned by Chef, changes will be overwritten.
+
+namespace inbox {
+
+  mailbox Drafts {
+    auto = subscribe
+    special_use = \Drafts
+  }
+
+  mailbox Junk {
+    auto = subscribe
+    special_use = \Junk
+  }
+
+  mailbox Trash {
+    auto = subscribe
+    special_use = \Trash
+  }
+
+  mailbox Sent {
+    auto = subscribe
+    special_use = \Sent
+  }
+
+}
+

@@ -65,6 +65,14 @@ edge = {
     'interface' => '',
     'port' => 587,
   },
+
+  'outbound_restricted' => {
+    'type' => 'smtp',
+    'queue' => 'outbound',
+    'rules' => 'outbound_restricted',
+    'interface' => '127.0.0.1',
+    'port' => 1587,
+  },
 }
 
 rules = {
@@ -81,26 +89,30 @@ rules = {
     'dnsbl' => 'zen.spamhaus.org',
     'require_credentials' => node['mail.slimta.org']['send_credentials'],
   },
+
+  'outbound_restricted' => {
+    'banner' => '{fqdn} ESMTP slimta.org Mail Submission Agent',
+  },
 }
 
 queue = {
   'inbound' => {
     'type' => 'redis',
-    'prefix' => 'slimta:inbound:',
+    'prefix' => node['mail.slimta.org']['redis_prefixes']['inbound'],
     'policies' => [
       {'type' => 'add_date_header'},
       {'type' => 'add_messageid_header'},
       {'type' => 'add_received_header'},
       {
         'type' => 'forward',
-        'everything' => node['mail.slimta.org']['forward_address']
+        'mapping' => node['mail.slimta.org']['forward_mapping'],
       },
     ],
   },
 
   'outbound' => {
     'type' => 'redis',
-    'prefix' => 'slimta:outbound:',
+    'prefix' => node['mail.slimta.org']['redis_prefixes']['outbound'],
     'policies' => [
       {'type' => 'add_date_header'},
       {'type' => 'add_messageid_header'},
@@ -115,6 +127,8 @@ slimta_app 'edge' do
   service_name 'slimta-edge'
   conf_files :logging => 'logging.conf', :rules => 'rules.conf'
   log_file 'slimta.log'
+  user 'slimta'
+  group 'mail'
 
   tls tls
   edge edge

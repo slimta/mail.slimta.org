@@ -1,0 +1,14 @@
+# conf.d/20-managesieve.conf
+# This file is owned by Chef, changes will be overwritten.
+
+service managesieve-login {
+  inet_listener sieve {
+    address = 127.0.0.1
+    port = 4190
+  }
+}
+
+service managesieve {
+  process_limit = 64
+}
+
