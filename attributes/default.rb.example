@@ -5,8 +5,8 @@ default['slimta']['install_extensions'] = [
 ]
 
 default['slimta']['version_lock'] = {
-  'python-slimta' => '0.3.23',
-  'slimta' => '0.2.1',
+  'python-slimta' => '1.0.2',
+  'slimta' => '0.4.0',
   'python-slimta-spf' => '0.1.1',
   'python-slimta-redisstorage' => '0.1.5',
 }
