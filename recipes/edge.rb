@@ -75,19 +75,26 @@ edge = {
   },
 }
 
+lookup = {
+  'addresses' => {
+    'type' => 'redis',
+    'key_template' => 'slimta:address:{address}',
+  },
+}
+
 rules = {
   'inbound' => {
     'banner' => '{fqdn} ESMTP slimta.org Mail Delivery Agent',
     'dnsbl' => 'zen.spamhaus.org',
     'reject_spf' => ['fail'],
     'reject_spam' => 'spamassassin',
-    'only_recipients' => node['mail.slimta.org']['allowed_addresses'],
+    'lookup_recipients' => 'addresses',
   },
 
   'outbound' => {
     'banner' => '{fqdn} ESMTP slimta.org Mail Submission Agent',
     'dnsbl' => 'zen.spamhaus.org',
-    'require_credentials' => node['mail.slimta.org']['send_credentials'],
+    'lookup_credentials' => 'addresses',
   },
 
   'outbound_restricted' => {
@@ -103,10 +110,7 @@ queue = {
       {'type' => 'add_date_header'},
       {'type' => 'add_messageid_header'},
       {'type' => 'add_received_header'},
-      {
-        'type' => 'forward',
-        'mapping' => node['mail.slimta.org']['forward_mapping'],
-      },
+      {'type' => 'lookup', 'lookup_group' => 'addresses'},
     ],
   },
 
@@ -131,6 +135,7 @@ slimta_app 'edge' do
   group 'mail'
 
   tls tls
+  lookup lookup
   edge edge
   rules rules
   queue queue

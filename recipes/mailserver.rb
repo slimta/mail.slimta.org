@@ -94,7 +94,7 @@ template '/etc/dovecot/dovecot-dict-auth.conf' do
   source 'dovecot/dovecot-dict-auth.conf.erb'
   mode 00644
   variables({
-    :redis_prefix => node['mail.slimta.org']['redis_prefixes']['mailboxes'],
+    :redis_prefix => node['mail.slimta.org']['redis_prefixes']['addresses'],
   })
   notifies :restart, 'service[dovecot]'
 end
