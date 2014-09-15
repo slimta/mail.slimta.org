@@ -75,10 +75,11 @@ edge = {
   },
 }
 
+redis_lookup_prefix = node['mail.slimta.org']['redis_prefixes']['addresses']
 lookup = {
   'addresses' => {
     'type' => 'redis',
-    'key_template' => 'slimta:address:{address}',
+    'key_template' => "#{ redis_lookup_prefix }{address}"
   },
 }
 
