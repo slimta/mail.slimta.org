@@ -122,6 +122,7 @@ queue = {
       {'type' => 'add_date_header'},
       {'type' => 'add_messageid_header'},
       {'type' => 'add_received_header'},
+      {'type' => 'lookup', 'lookup_group' => 'addresses'},
       {'type' => 'split_recipient_domain'},
     ],
   },
