@@ -1,7 +1,16 @@
 # conf.d/15-lda.conf
 # This file is owned by Chef, changes will be overwritten.
 
+protocols = $protocols lmtp
+
 protocol lda {
   mail_plugins = $mail_plugins sieve
+}
+
+service lmtp {
+  inet_listener lmtp {
+    address = 127.0.0.1 ::1
+    port = 24
+  }
 }
 

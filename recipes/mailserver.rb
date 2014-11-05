@@ -34,7 +34,12 @@ directory '/var/mail' do
   group 'mail'
 end
 
-['dovecot-imapd', 'dovecot-sieve', 'dovecot-managesieved'].each do |pkg|
+[
+  'dovecot-imapd',
+  'dovecot-sieve',
+  'dovecot-managesieved',
+  'dovecot-lmtpd'
+].each do |pkg|
   package pkg do
     action :install
     notifies :restart, 'service[dovecot]'
