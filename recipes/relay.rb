@@ -30,6 +30,7 @@ queue = {
     'type' => 'redis',
     'prefix' => node['mail.slimta.org']['redis_prefixes']['inbound'],
     'relay' => 'inbound',
+    'bounce_queue' => 'outbound',
   },
 
   'outbound' => {
@@ -45,8 +46,7 @@ queue = {
 
 relay = {
   'inbound' => {
-    'type' => 'dovecot',
-    'path' => '/usr/lib/dovecot/dovecot-lda',
+    'type' => 'lmtp',
   },
 
   'outbound' => {
