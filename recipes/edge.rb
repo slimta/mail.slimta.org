@@ -25,6 +25,14 @@
 # THE SOFTWARE.
 #
 
+package 'spamassassin' do
+  action :install
+end
+
+service 'spamassassin' do
+  action [:start, :enable]
+end
+
 tls = {
   'main' => {
     'keyfile' => '/etc/slimta/certs/key.pem',
