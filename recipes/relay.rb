@@ -47,10 +47,12 @@ queue = {
 relay = {
   'inbound' => {
     'type' => 'lmtp',
+    'ehlo_as' => 'mail.slimta.org',
   },
 
   'outbound' => {
     'type' => 'mx',
+    'ehlo_as' => 'mail.slimta.org',
   },
 }
 
