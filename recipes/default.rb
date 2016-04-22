@@ -61,4 +61,9 @@ end
   end
 end
 
+template '/etc/logrotate.d/slimta' do
+  source 'slimta.logrotate.erb'
+  mode 00644
+end
+
 # vim:sw=2:ts=2:sts=2:et:ai:ft=ruby:
