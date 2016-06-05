@@ -53,6 +53,7 @@ relay = {
   'outbound' => {
     'type' => 'mx',
     'ehlo_as' => 'mail.slimta.org',
+    'ipv4_only' => true,
   },
 }
 
