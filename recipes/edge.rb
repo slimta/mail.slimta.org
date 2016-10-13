@@ -81,6 +81,12 @@ lookup = {
     'type' => 'redis',
     'key_template' => "#{ redis_lookup_prefix }{address}"
   },
+  'outbound_sender' => {
+    'type' => 'redis',
+    'key_template' => "#{ redis_lookup_prefix }__outbound_sender__"
+    'on_sender' => true,
+    'on_recipients' => false,
+  },
 }
 
 rules = {
