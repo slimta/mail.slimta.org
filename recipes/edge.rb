@@ -79,11 +79,12 @@ redis_lookup_prefix = node['mail.slimta.org']['redis_prefixes']['addresses']
 lookup = {
   'addresses' => {
     'type' => 'redis',
-    'key_template' => "#{ redis_lookup_prefix }{address}"
+    'key_template' => "#{ redis_lookup_prefix }{address}",
   },
+
   'outbound_sender' => {
     'type' => 'redis',
-    'key_template' => "#{ redis_lookup_prefix }__outbound_sender__"
+    'key_template' => "#{ redis_lookup_prefix }__outbound_sender__",
     'on_sender' => true,
     'on_recipients' => false,
   },
