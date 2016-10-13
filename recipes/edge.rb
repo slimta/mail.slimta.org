@@ -85,8 +85,6 @@ lookup = {
   'outbound_sender' => {
     'type' => 'redis',
     'key_template' => "#{ redis_lookup_prefix }__outbound_sender__",
-    'on_sender' => true,
-    'on_recipients' => false,
   },
 }
 
@@ -130,6 +128,12 @@ queue = {
       {'type' => 'add_messageid_header'},
       {'type' => 'add_received_header'},
       {'type' => 'split_recipient_domain'},
+      {
+        'type' => 'lookup',
+        'lookup_group' => 'outbound_sender',
+        'on_sender' => true,
+        'on_recipients' => false,
+      },
     ],
   },
 }
