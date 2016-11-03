@@ -35,8 +35,8 @@ end
 
 tls = {
   'main' => {
-    'keyfile' => '/etc/slimta/certs/key.pem',
-    'certfile' => '/etc/slimta/certs/cert.pem',
+    'keyfile' => node['mail.slimta.org']['certs']['key'],
+    'certfile' => node['mail.slimta.org']['certs']['cert'],
   },
 }
 

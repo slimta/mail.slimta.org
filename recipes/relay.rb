@@ -65,7 +65,6 @@ slimta_app 'relay' do
   user 'slimta'
   group 'mail'
 
-  tls tls
   queue queue
   relay relay
 

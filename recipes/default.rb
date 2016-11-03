@@ -46,21 +46,6 @@ end
 include_recipe 'mail.slimta.org::edge'
 include_recipe 'mail.slimta.org::relay'
 
-directory '/etc/slimta/certs' do
-  mode 0755
-  action :create
-end
-
-['cert', 'key'].each do |ssl_file|
-  file ::File.join('/etc/slimta/certs', "#{ ssl_file }.pem") do
-    content node['mail.slimta.org']['ssl'][ssl_file]
-    mode 0644
-    action :create
-    notifies :restart, 'service[slimta-edge]'
-    notifies :restart, 'service[slimta-relay]'
-  end
-end
-
 template '/etc/logrotate.d/slimta' do
   source 'slimta.logrotate.erb'
   mode 00644

@@ -71,8 +71,8 @@ template '/etc/dovecot/conf.d/10-ssl.conf' do
   source 'dovecot/10-ssl.conf.erb'
   mode 00644
   variables({
-    :cert_file => '/etc/slimta/certs/cert.pem',
-    :key_file => '/etc/slimta/certs/key.pem',
+    :cert_file => node['mail.slimta.org']['certs']['cert'],
+    :key_file => node['mail.slimta.org']['certs']['key'],
   })
   notifies :restart, 'service[dovecot]'
 end

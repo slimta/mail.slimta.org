@@ -17,14 +17,9 @@ default['mail.slimta.org']['redis_prefixes'].tap do |prefixes|
   prefixes['addresses'] = 'slimta:address:'
 end
 
-default['mail.slimta.org']['ssl']['cert'] = <<EOF
------BEGIN CERTIFICATE-----
------END CERTIFICATE-----
-EOF
-
-default['mail.slimta.org']['ssl']['key'] = <<EOF
------BEGIN RSA PRIVATE KEY-----
------END RSA PRIVATE KEY-----
-EOF
+default['mail.slimta.org']['certs'].tap do |certs|
+  certs['key'] = '/etc/slimta/certs/mail.slimta.org/privkey.pem'
+  certs['cert'] = '/etc/slimta/certs/mail.slimta.org/cert.pem'
+end
 
 # vim:sw=2:ts=2:sts=2:et:ai:ft=ruby:
