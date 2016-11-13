@@ -19,7 +19,7 @@ end
 
 default['mail.slimta.org']['certs'].tap do |certs|
   certs['key'] = '/etc/slimta/certs/mail.slimta.org/privkey.pem'
-  certs['cert'] = '/etc/slimta/certs/mail.slimta.org/cert.pem'
+  certs['cert'] = '/etc/slimta/certs/mail.slimta.org/fullchain.pem'
 end
 
 # vim:sw=2:ts=2:sts=2:et:ai:ft=ruby:
