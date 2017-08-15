@@ -45,7 +45,6 @@ edge = {
     'type' => 'smtp',
     'queue' => 'inbound',
     'rules' => 'inbound',
-    'interface' => '',
     'port' => 25,
   },
 
@@ -53,7 +52,6 @@ edge = {
     'type' => 'smtp',
     'queue' => 'inbound',
     'rules' => 'inbound',
-    'interface' => '',
     'port' => 465,
     'tls_immediately' => true,
   },
@@ -62,7 +60,6 @@ edge = {
     'type' => 'smtp',
     'queue' => 'outbound',
     'rules' => 'outbound',
-    'interface' => '',
     'port' => 587,
   },
 
@@ -70,7 +67,7 @@ edge = {
     'type' => 'smtp',
     'queue' => 'outbound',
     'rules' => 'outbound_restricted',
-    'interface' => '127.0.0.1',
+    'interface' => 'localhost',
     'port' => 1587,
   },
 }
