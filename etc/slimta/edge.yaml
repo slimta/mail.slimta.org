@@ -1,0 +1,85 @@
+process:
+  slimta: &process_slimta
+    daemon: true
+    user: slimta
+    group: mail
+    stdout: '/var/log/slimta/edge-stdout.log'
+    stderr: '/var/log/slimta/edge-stderr.log'
+    logging: !include logging.yaml
+
+lookup:
+  addresses: &lookup_addresses
+    key_template: 'slimta:address:{address}'
+    type: 'redis'
+  outbound_sender: &lookup_outbound_sender
+    key_template: 'slimta:address:__outbound_sender__'
+    type: 'redis'
+
+rules:
+  inbound: &rules_inbound
+    banner: '{fqdn} ESMTP slimta.org Mail Delivery Agent'
+    dnsbl: zen.spamhaus.org
+    reject_spf: [fail]
+    reject_spam: {type: spamassassin}
+    lookup_recipients: *lookup_addresses
+  outbound: &rules_outbound
+    banner: '{fqdn} ESMTP slimta.org Mail Submission Agent'
+    dnsbl: zen.spamhaus.org
+    lookup_credentials: *lookup_addresses
+  outbound_unrestricted: &rules_outbound_unrestricted
+    banner: '{fqdn} ESMTP slimta.org Mail Submission Agent'
+
+tls:
+  main: &tls_main
+    keyfile: '/etc/ssl/certs/mail.slimta.org/privkey.pem'
+    certfile: '/etc/ssl/certs/mail.slimta.org/fullchain.pem'
+
+edge:
+  inbound: &edge_inbound
+    type: smtp
+    queue: inbound
+    listener:
+      port: 25
+    proxyprotocol: true
+    tls: *tls_main
+    rules: *rules_inbound
+  outbound: &edge_outbound
+    type: smtp
+    queue: outbound
+    listener:
+      port: 587
+    proxyprotocol: true
+    tls: *tls_main
+    rules: *rules_outbound
+  outbound_unrestricted: &edge_outbound_unrestricted
+    type: smtp
+    queue: outbound
+    listener:
+      interface: '127.0.0.1'
+      port: 1587
+    rules: *rules_outbound_unrestricted
+
+queue:
+  inbound: &queue_inbound
+    type: redis
+    prefix: 'slimta:inbound:'
+    policies:
+      - type: add_date_header
+      - type: add_messageid_header
+      - type: add_received_header
+      - type: lookup
+        lookup: *lookup_addresses
+  outbound: &queue_outbound
+    type: redis
+    prefix: 'slimta:outbound:'
+    policies:
+      - type: add_date_header
+      - type: add_messageid_header
+      - type: add_received_header
+      - type: split_recipient_domain
+      - type: lookup
+        lookup: *lookup_outbound_sender
+        on_sender: true
+        on_recipients: false
+
+# vim:sw=2:ts=2:sts=2:et:ai:

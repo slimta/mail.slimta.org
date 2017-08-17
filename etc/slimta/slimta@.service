@@ -1,0 +1,13 @@
+[Unit]
+Description = Slim Mail Transfer Agent - %I
+
+[Service]
+Type = forking
+PIDFile = /var/run/slimta-%i.pid
+ExecStart = /opt/slimta/bin/slimta --daemon \
+ --config /etc/slimta/%i.yaml \
+ --pid-file /var/run/slimta-%i.pid
+ExecReload = /bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy = multi-user.target

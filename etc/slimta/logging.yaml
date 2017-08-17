@@ -1,0 +1,30 @@
+version: 1
+
+formatters:
+  console:
+    format: '%(levelname)-8s %(name)-15s %(message)s'
+  default:
+    format: '%(asctime)s %(levelname)s %(process)d %(name)s %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: console
+    stream: !!python/name:sys.stdout
+  file:
+    class: logging.handlers.WatchedFileHandler
+    level: DEBUG
+    formatter: default
+    filename: '/var/log/slimta/slimta.log'
+
+loggers:
+  slimta:
+    level: DEBUG
+    propagate: true
+
+root:
+  level: DEBUG
+  handlers: [file]
+
+# vim:sw=2:ts=2:sts=2:et:ai:

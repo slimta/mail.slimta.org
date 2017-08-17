@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+DOMAIN=mail.slimta.org
+OUTDIR=/etc/ssl/certs
+
+source /opt/letsencrypt/bin/activate
+source /opt/letsencrypt/etc/lexicon-secrets.sh
+
+exec dehydrated --cron \
+	--hook /opt/letsencrypt/bin/lexicon-hook.sh \
+	--challenge dns-01 \
+	--domain $DOMAIN \
+	--out $OUTDIR

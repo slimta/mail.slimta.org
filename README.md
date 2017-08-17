@@ -1,16 +1,24 @@
-mail.slimta.org Cookbook
-========================
+mail.slimta.org
+===============
 
-This cookbook intends to provide a working example of the [slimta cookbook][1].
-The private settings and files are not included, which means for this to work
-you'll need to create the attributes:
+Provides config files and bootstrap scripts for mail.slimta.org.
 
-#### `attributes/default.rb`
+### Usage
 
-This file defines some attributes used by the mail server.
+On an existing mail.slimta.org server:
 
-Copy the provided `attributes/default.rb.example` and fill in the expected
-values to try it out.
+```bash
+sudo ./export.sh
+```
 
-[1]: https://github.com/slimta/slimta-cookbook
+Transfer the resulting backup tarball to the new mail.slimta.org server.
 
+```bash
+sudo ./bootstrap.sh backup-1503000870.tar
+```
+
+Subsequent runs should not pass in the backup tarball:
+
+```bash
+sudo ./bootstrap.sh
+```
