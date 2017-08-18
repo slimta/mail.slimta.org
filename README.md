@@ -13,6 +13,10 @@ is used by `mail.slimta.org` and provides:
 
 ### Usage
 
+_*NOTE*_: It's very important that you configure the FQDN of your machine
+before proceeding. The `hostname --fqdn` command should return the same name as
+the MX record of your domain.
+
 If you have an existing, bootstrapped slimta mailserver:
 
 ```bash
