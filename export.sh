@@ -14,7 +14,7 @@ tar cf $export -C /var mail
 tmpdir=$(mktemp -d)
 mkdir -p $tmpdir/json $tmpdir/certs
 
-for key in $(redis-cli --scan); do
+for key in $(redis-cli --raw keys 'slimta:address:*'); do
 	redis-cli --raw get $key > $tmpdir/json/$key.json
 done
 tar rf $export -C $tmpdir json
