@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-DOMAIN=mail.slimta.org
+DOMAIN=$(hostname --fqdn)
 OUTDIR=/etc/ssl/certs
 
 source /opt/letsencrypt/bin/activate

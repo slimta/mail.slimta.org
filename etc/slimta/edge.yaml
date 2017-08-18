@@ -17,22 +17,22 @@ lookup:
 
 rules:
   inbound: &rules_inbound
-    banner: '{fqdn} ESMTP slimta.org Mail Delivery Agent'
+    banner: '{fqdn} ESMTP Mail Delivery Agent'
     dnsbl: zen.spamhaus.org
     reject_spf: [fail]
     reject_spam: {type: spamassassin}
     lookup_recipients: *lookup_addresses
   outbound: &rules_outbound
-    banner: '{fqdn} ESMTP slimta.org Mail Submission Agent'
+    banner: '{fqdn} ESMTP Mail Submission Agent'
     dnsbl: zen.spamhaus.org
     lookup_credentials: *lookup_addresses
   outbound_unrestricted: &rules_outbound_unrestricted
-    banner: '{fqdn} ESMTP slimta.org Mail Submission Agent'
+    banner: '{fqdn} ESMTP Mail Submission Agent'
 
 tls:
   main: &tls_main
-    keyfile: '/etc/ssl/certs/mail.slimta.org/privkey.pem'
-    certfile: '/etc/ssl/certs/mail.slimta.org/fullchain.pem'
+    keyfile: '/etc/ssl/certs/local/privkey.pem'
+    certfile: '/etc/ssl/certs/local/fullchain.pem'
 
 edge:
   inbound: &edge_inbound

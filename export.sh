@@ -7,6 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
+fqdn=$(hostname --fqdn)
 export=backup-$(date +%s).tar
 
 tar cf $export -C /var mail
@@ -20,7 +21,7 @@ done
 tar rf $export -C $tmpdir json
 
 cp -a /opt/letsencrypt/etc/lexicon-secrets.sh $tmpdir/certs/
-cp -a /etc/ssl/certs/mail.slimta.org/ $tmpdir/certs/
+cp -a /etc/ssl/certs/$fqdn/ $tmpdir/certs/
 tar rf $export -C $tmpdir certs
 
 rm -rf $tmpdir

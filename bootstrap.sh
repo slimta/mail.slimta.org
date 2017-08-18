@@ -4,9 +4,10 @@ set -e
 
 bootstrap=$0
 bootstrap_dir=$(dirname $bootstrap)
-tmpdir=$(mktemp -d)
+fqdn=$(hostname --fqdn)
+workdir=$(mktemp -d)
 
-trap "rm -rf $tmpdir" EXIT INT
+trap "rm -rf $workdir" EXIT INT
 
 function setup_user {
 	useradd -M -d /nonexistent -s /bin/false -G mail slimta || :
@@ -36,8 +37,8 @@ function setup_redis {
 	fi
 	systemctl start redis-server
 	systemctl enable redis-server
-	if [ -d $tmpdir/json ]; then
-		for json in $tmpdir/json/*.json; do
+	if [ -d $workdir/json ]; then
+		for json in $workdir/json/*.json; do
 			key=$(basename $json .json)
 			cat $json | redis-cli -x set $key
 		done
@@ -59,11 +60,16 @@ function setup_letsencrypt {
 	curl -o /opt/letsencrypt/bin/dehydrated https://raw.githubusercontent.com/lukas2511/dehydrated/3c1d2673d1f0f8da717bcbc516fdd2b29fb1cf0a/dehydrated
 	chmod +x /opt/letsencrypt/bin/dehydrated
 	mkdir -p /opt/letsencrypt/etc
-	if [ -d $tmpdir/certs ]; then
-		cp -f $tmpdir/certs/lexicon-secrets.sh /opt/letsencrypt/etc/
-		cp -af $tmpdir/certs/mail.slimta.org/ /etc/ssl/certs/
+	if [ -d $workdir/certs ]; then
+		cp -f $workdir/certs/lexicon-secrets.sh /opt/letsencrypt/etc/
+		cp -af $workdir/certs/$fqdn/ /etc/ssl/certs/
 	fi
+	chown root:root /opt/letsencrypt/etc/lexicon-secrets.sh
+	chown root:root /etc/ssl/certs/$fqdn/
+	chmod og-rwx /opt/letsencrypt/etc/lexicon-secrets.sh
+	chmod og-rwx /etc/ssl/certs/$fqdn/
 	/opt/letsencrypt/bin/letsencrypt-cron
+	ln -sf /etc/ssl/certs/$fqdn/ /etc/ssl/certs/local
 	ln -sf /opt/letsencrypt/bin/letsencrypt-cron /etc/cron.daily/letsencrypt
 }
 
@@ -92,10 +98,10 @@ function setup_slimta {
 	cp -f $bootstrap_dir/etc/slimta/slimta.logrotate /etc/logrotate.d/slimta
 	cp -f $bootstrap_dir/etc/slimta/*.yaml /etc/slimta/
 	systemctl daemon-reload
-	systemctl start slimta@edge.service
-	systemctl start slimta@relay.service
-	systemctl enable slimta@edge.service
-	systemctl enable slimta@relay.service
+	systemctl start slimta@edge
+	systemctl start slimta@relay
+	systemctl enable slimta@edge
+	systemctl enable slimta@relay
 }
 
 function setup_dovecot {
@@ -111,8 +117,8 @@ function setup_dovecot {
 	chown root:mail /var/mail
 	chmod g+ws /var/mail
 	chmod o-rwx /var/mail
-	if [ -d $tmpdir/mail ]; then
-		cp -a $tmpdir/mail/* /var/mail/
+	if [ -d $workdir/mail ]; then
+		cp -a $workdir/mail/* /var/mail/
 		chown -R slimta:mail /var/mail/*
 	fi
 	cp -f $bootstrap_dir/etc/dovecot/conf.d/*.conf /etc/dovecot/conf.d/
@@ -128,7 +134,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 if [ -n "$1" ]; then
-	tar xf $1 -C $tmpdir
+	tar xf $1 -C $workdir
 fi
 
 declare -a actions=(
@@ -144,3 +150,7 @@ declare -a actions=(
 for act in "${actions[@]}"; do
 	$act
 done
+
+systemctl restart dovecot
+systemctl restart slimta@edge
+systemctl restart slimta@relay
