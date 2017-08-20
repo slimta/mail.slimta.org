@@ -40,3 +40,25 @@ Subsequent runs should not pass in the tarball:
 ```bash
 sudo ./bootstrap.sh
 ```
+
+## Address Utility
+
+Once you are bootstrapped, redis is used to manage deliverable addresses on the
+mailserver. The `./address-util.sh` script can help manage them:
+
+```
+usage: ./address-util.sh <command> [data] [address|domain]
+
+commands:
+    --list          List all the address records
+    --get           Show the current record
+    --set           Set the record with the new data
+    --add           Add the new data to the record
+    --delete        Delete the record
+
+data:
+    --mailbox       Make the record a deliverable mailbox, with password
+    --alias VAL     Make the record an alias to VAL
+    --headers JSON  Add the JSON dictionary of header to the message
+    --verp DOMAIN   VERP-encode the address on the given domain
+```
