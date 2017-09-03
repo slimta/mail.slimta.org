@@ -16,7 +16,7 @@ function help {
 	echo "	--list          List all the address records" 
 	echo "	--get           Show the current record"
 	echo "	--set           Set the record with the new data"
-	echo "	--add           Add the new data to the record"
+	echo "	--update        Add additional data to the record"
 	echo "	--delete        Delete the record"
 	echo
 	echo "data:"
@@ -62,8 +62,8 @@ while [ -n "$1" ]; do
 			command=set
 			shift
 			;;
-		--add)
-			command=add
+		--update)
+			command=update
 			shift
 			;;
 		--delete)
@@ -126,7 +126,7 @@ if [ "$command" = "get" ]; then
 	fi
 elif [ "$command" = "set" ]; then
 	build_record "{}" | redis-cli -x set "slimta:address:$record"
-elif [ "$command" = "add" ]; then
+elif [ "$command" = "update" ]; then
 	existing=$(redis-cli --raw get "slimta:address:$record")
 	build_record "$existing" | redis-cli -x set "slimta:address:$record"
 elif [ "$command" = "delete" ]; then
