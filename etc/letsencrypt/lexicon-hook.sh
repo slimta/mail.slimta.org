@@ -1,23 +1,44 @@
 #!/usr/bin/env bash
 #
-# Example how to deploy a DNS challange using lexicon
+# Example how to deploy a DNS challenge using lexicon
 
 set -e
 set -u
 set -o pipefail
 
+export PROVIDER_UPDATE_DELAY=${PROVIDER_UPDATE_DELAY:-"30"}
 export PROVIDER=${PROVIDER:-"cloudflare"}
 
 function deploy_challenge {
-    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
+    local chain=($@)
+    for ((i=0; i < $#; i+=3)); do
+        local DOMAIN="${chain[i]}" TOKEN_FILENAME="${chain[i+1]}" TOKEN_VALUE="${chain[i+2]}"
 
-    echo "deploy_challenge called: ${DOMAIN}, ${TOKEN_FILENAME}, ${TOKEN_VALUE}"
+        echo "deploy_challenge called: ${DOMAIN}, ${TOKEN_FILENAME}, ${TOKEN_VALUE}"
 
-    lexicon $PROVIDER create ${DOMAIN} TXT --name="_acme-challenge.${DOMAIN}." --content="${TOKEN_VALUE}"
+        if [ "${PROVIDER}" != "hetzner" ]; then
+            lexicon $PROVIDER create ${DOMAIN} TXT --name="_acme-challenge.${DOMAIN}." \
+            --content="${TOKEN_VALUE}"
+        else
+            local PROPAGATED="yes"
+            if ((i < $# - 3)); then
+                local PROPAGATED="no"
+            fi
+            lexicon $PROVIDER create ${DOMAIN} TXT --name="_acme-challenge.${DOMAIN}." \
+            --content="${TOKEN_VALUE}" --propagated="${PROPAGATED}"
+        fi
+    done
 
-    sleep 30
+    if [ "${PROVIDER}" != "hetzner" ]; then
+        local DELAY_COUNTDOWN=$PROVIDER_UPDATE_DELAY
+        while [ $DELAY_COUNTDOWN -gt 0 ]; do
+            echo -ne "${DELAY_COUNTDOWN}\033[0K\r"
+            sleep 1
+            : $((DELAY_COUNTDOWN--))
+        done
+    fi
 
-    # This hook is called once for every domain that needs to be
+    # This hook is called once for every domain chain that needs to be
     # validated, including any alternative names you may have listed.
     #
     # Parameters:
@@ -36,27 +57,43 @@ function deploy_challenge {
 }
 
 function clean_challenge {
-    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
+    local chain=($@)
+    for ((i=0; i < $#; i+=3)); do
+        local DOMAIN="${chain[i]}" TOKEN_FILENAME="${chain[i+1]}" TOKEN_VALUE="${chain[i+2]}"
 
-    echo "clean_challenge called: ${DOMAIN}, ${TOKEN_FILENAME}, ${TOKEN_VALUE}"
+        echo "clean_challenge called: ${DOMAIN}, ${TOKEN_FILENAME}, ${TOKEN_VALUE}"
 
-    lexicon $PROVIDER delete ${DOMAIN} TXT --name="_acme-challenge.${DOMAIN}." --content="${TOKEN_VALUE}"
+        lexicon $PROVIDER delete ${DOMAIN} TXT --name="_acme-challenge.${DOMAIN}." \
+        --content="${TOKEN_VALUE}"
+    done
 
-    # This hook is called after attempting to validate each domain,
-    # whether or not validation was successful. Here you can delete
-    # files or DNS records that are no longer needed.
+    # This hook is called after attempting to validate each domain
+    # chain, whether or not validation was successful. Here you
+    # can delete files or DNS records that are no longer needed.
     #
     # The parameters are the same as for deploy_challenge.
+}
+
+function invalid_challenge() {
+    local DOMAIN="${1}" RESPONSE="${2}"
+
+    echo "invalid_challenge called: ${DOMAIN}, ${RESPONSE}"
+
+    # This hook is called if the challenge response has failed, so domain
+    # owners can be aware and act accordingly.
+    #
+    # Parameters:
+    # - DOMAIN
+    #   The primary domain name, i.e. the certificate common
+    #   name (CN).
+    # - RESPONSE
+    #   The response that the verification server returned
 }
 
 function deploy_cert {
     local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}"
 
     echo "deploy_cert called: ${DOMAIN}, ${KEYFILE}, ${CERTFILE}, ${FULLCHAINFILE}, ${CHAINFILE}"
-
-    systemctl restart dovecot
-    systemctl restart slimta@edge.service
-    systemctl restart slimta@relay.service
 
     # This hook is called once for each certificate that has been
     # produced. Here you might, for instance, copy your new certificates
@@ -74,6 +111,10 @@ function deploy_cert {
     #   The path of the file containing the full certificate chain.
     # - CHAINFILE
     #   The path of the file containing the intermediate certificate(s).
+
+    systemctl restart dovecot
+    systemctl restart slimta@edge.service
+    systemctl restart slimta@relay.service
 }
 
 function unchanged_cert {
@@ -98,4 +139,21 @@ function unchanged_cert {
     #   The path of the file containing the intermediate certificate(s).
 }
 
-HANDLER=$1; shift; $HANDLER "$@"
+exit_hook() {
+  # This hook is called at the end of a dehydrated command and can be used
+  # to do some final (cleanup or other) tasks.
+
+  :
+}
+
+startup_hook() {
+  # This hook is called before the dehydrated command to do some initial tasks
+  # (e.g. starting a webserver).
+
+  :
+}
+
+HANDLER=$1; shift;
+if [ -n "$(type -t $HANDLER)" ] && [ "$(type -t $HANDLER)" = function ]; then
+  $HANDLER "$@"
+fi

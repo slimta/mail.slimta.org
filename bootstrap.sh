@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 bootstrap=$0
 bootstrap_dir=$(dirname $bootstrap)
@@ -46,6 +46,7 @@ function setup_redis {
 }
 
 function setup_letsencrypt {
+	dehydrated_url=https://raw.githubusercontent.com/lukas2511/dehydrated/585ed5404bd8a89002ea9f250a24f075ddd52d6f/dehydrated
 	if ! dpkg -s curl > /dev/null; then
 		apt-get update
 		apt-get install -y \
@@ -55,9 +56,9 @@ function setup_letsencrypt {
 		python3 -m virtualenv -p python2.7 /opt/letsencrypt
 	fi
 	/opt/letsencrypt/bin/pip install -U dns-lexicon
-	cp -n $bootstrap_dir/etc/letsencrypt/letsencrypt-cron /opt/letsencrypt/bin/
-	cp -n $bootstrap_dir/etc/letsencrypt/lexicon-hook.sh /opt/letsencrypt/bin/
-	curl -o /opt/letsencrypt/bin/dehydrated https://raw.githubusercontent.com/lukas2511/dehydrated/3c1d2673d1f0f8da717bcbc516fdd2b29fb1cf0a/dehydrated
+	cp -u $bootstrap_dir/etc/letsencrypt/letsencrypt-cron /opt/letsencrypt/bin/
+	cp -u $bootstrap_dir/etc/letsencrypt/lexicon-hook.sh /opt/letsencrypt/bin/
+	curl -o /opt/letsencrypt/bin/dehydrated $dehydrated_url
 	chmod +x /opt/letsencrypt/bin/dehydrated
 	mkdir -p /opt/letsencrypt/etc
 	if [ -d $workdir/certs ]; then
