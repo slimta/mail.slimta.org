@@ -15,11 +15,13 @@ function setup_user {
 }
 
 function setup_python {
-	if ! dpkg -s python3 > /dev/null; then
+	if ! dpkg -s python3.7 > /dev/null; then
 		apt-get update
 		apt-get install -y \
-			python3 \
-			python3-virtualenv
+			python3.7 \
+			python3.7-venv \
+			python3-virtualenv \
+			python3-wheel
 	fi
 	if ! dpkg -s python2.7 > /dev/null; then
 		apt-get update
@@ -53,7 +55,7 @@ function setup_letsencrypt {
 			curl
 	fi
 	if ! /opt/letsencrypt/bin/python -V; then
-		python3 -m virtualenv -p python2.7 /opt/letsencrypt
+		python3 -m venv /opt/letsencrypt
 	fi
 	/opt/letsencrypt/bin/pip install -U dns-lexicon
 	cp -u $bootstrap_dir/etc/letsencrypt/letsencrypt-cron /opt/letsencrypt/bin/
@@ -105,6 +107,20 @@ function setup_slimta {
 	systemctl enable slimta@relay
 }
 
+function setup_pymap {
+	if ! /opt/pymap/bin/python -V; then
+		python3 -m venv /opt/pymap
+	fi
+	/opt/pymap/bin/pip install -U \
+		pymap \
+		aioredis \
+		hiredis \
+		grpclib \
+		protobuf \
+		sievelib \
+		passlib
+}
+
 function setup_dovecot {
 	if ! dpkg -s dovecot-imapd > /dev/null; then
 		apt-get update
@@ -145,6 +161,7 @@ declare -a actions=(
 	setup_letsencrypt
 	setup_spamassassin
 	setup_slimta
+	setup_pymap
 	setup_dovecot
 )
 
