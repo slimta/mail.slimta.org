@@ -1,6 +1,6 @@
 [Unit]
 Description = pymap IMAP server - %I
-Wants = pymap-%i.socket
+Wants = pymap@%i.socket
 
 [Service]
 EnvironmentFile = /etc/default/pymap-%i
