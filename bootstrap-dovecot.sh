@@ -108,34 +108,28 @@ function setup_slimta {
 	systemctl enable slimta@relay
 }
 
-function setup_pymap {
-	if ! dpkg -s libsystemd-dev > /dev/null; then
+function setup_dovecot {
+	if ! dpkg -s dovecot-imapd > /dev/null; then
 		apt-get update
 		apt-get install -y \
-			gcc \
-			pkg-config \
-			python3-dev \
-			libsystemd-dev
+			dovecot-imapd \
+			dovecot-sieve \
+			dovecot-managesieved \
+			dovecot-lmtpd
 	fi
-	if ! /opt/pymap/bin/python -V; then
-		python3 -m venv /opt/pymap
+	mkdir -p /var/mail
+	chown root:mail /var/mail
+	chmod g+ws /var/mail
+	chmod o-rwx /var/mail
+	if [ -d $workdir/mail ]; then
+		cp -a $workdir/mail/* /var/mail/
+		chown -R slimta:mail /var/mail/*
 	fi
-	/opt/pymap/bin/pip install -U pip \
-		pysasl \
-		aioredis \
-		hiredis \
-		grpclib \
-		protobuf \
-		sievelib \
-		passlib \
-		systemd-python \
-		pymap
-	cp -f $bootstrap_dir/etc/pymap/pymap@.service /etc/systemd/system/
-	cp -f $bootstrap_dir/etc/pymap/pymap@.socket /etc/systemd/system/
-	cp -u $bootstrap_dir/etc/pymap/pymap-env /etc/default/pymap-default
-	systemctl daemon-reload
-	systemctl start pymap@default
-	systemctl enable pymap@default
+	cp -f $bootstrap_dir/etc/dovecot/conf.d/*.conf /etc/dovecot/conf.d/
+	cp -f $bootstrap_dir/etc/dovecot/*.conf /etc/dovecot/
+	usermod -a -G mail dovecot
+	systemctl start dovecot
+	systemctl enable dovecot
 }
 
 if [ "$(id -u)" != "0" ]; then
@@ -154,13 +148,13 @@ declare -a actions=(
 	setup_letsencrypt
 	setup_spamassassin
 	setup_slimta
-	setup_pymap
+	setup_dovecot
 )
 
 for act in "${actions[@]}"; do
 	$act
 done
 
+systemctl restart dovecot
 systemctl restart slimta@edge
 systemctl restart slimta@relay
-systemctl restart pymap@default

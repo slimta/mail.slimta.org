@@ -11,8 +11,8 @@ lookup:
   addresses: &lookup_addresses
     key_template: 'slimta:address:{address}'
     type: 'redis'
-  outbound_sender: &lookup_outbound_sender
-    key_template: 'slimta:address:__outbound_sender__'
+  domains: &lookup_domains
+    key_template: 'slimta:address:{domain}'
     type: 'redis'
 
 rules:
@@ -69,6 +69,8 @@ queue:
       - type: add_received_header
       - type: lookup
         lookup: *lookup_addresses
+      - type: lookup
+        lookup: *lookup_domains
   outbound: &queue_outbound
     type: redis
     prefix: 'slimta:outbound:'
@@ -77,9 +79,5 @@ queue:
       - type: add_messageid_header
       - type: add_received_header
       - type: split_recipient_domain
-      - type: lookup
-        lookup: *lookup_outbound_sender
-        on_sender: true
-        on_recipients: false
 
 # vim:sw=2:ts=2:sts=2:et:ai:
