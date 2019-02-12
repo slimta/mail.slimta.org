@@ -3,6 +3,7 @@ Description = pymap IMAP server - %I
 Wants = pymap@%i.socket
 
 [Service]
+Type = notify
 EnvironmentFile = /etc/default/pymap-%i
 ExecStart = /opt/pymap/bin/pymap \
  --admin-socket /var/run/pymap-%i.sock \
