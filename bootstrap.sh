@@ -90,7 +90,7 @@ function setup_slimta {
 	if ! /opt/slimta/bin/python -V; then
 		python3 -m virtualenv -p python2.7 /opt/slimta
 	fi
-	/opt/slimta/bin/pip install -U pip \
+	/opt/slimta/bin/pip install -U pip wheel \
 		pysasl \
 		python-slimta \
 		python-slimta-spf \
@@ -100,6 +100,7 @@ function setup_slimta {
 	mkdir -p /var/log/slimta
 	cp -f $bootstrap_dir/etc/slimta/slimta@.service /etc/systemd/system/
 	cp -f $bootstrap_dir/etc/slimta/slimta.logrotate /etc/logrotate.d/slimta
+	cp -f $bootstrap_dir/etc/slimta/slimta-relay /etc/default/
 	cp -f $bootstrap_dir/etc/slimta/*.yaml /etc/slimta/
 	systemctl daemon-reload
 	systemctl start slimta@edge
@@ -120,7 +121,7 @@ function setup_pymap {
 	if ! /opt/pymap/bin/python -V; then
 		python3 -m venv /opt/pymap
 	fi
-	/opt/pymap/bin/pip install -U pip \
+	/opt/pymap/bin/pip install -U pip wheel \
 		pysasl \
 		aioredis \
 		hiredis \
@@ -132,10 +133,10 @@ function setup_pymap {
 		pymap
 	cp -f $bootstrap_dir/etc/pymap/pymap@.service /etc/systemd/system/
 	cp -f $bootstrap_dir/etc/pymap/pymap@.socket /etc/systemd/system/
-	cp -u $bootstrap_dir/etc/pymap/pymap-env /etc/default/pymap-default
+	cp -f $bootstrap_dir/etc/pymap/pymap-default /etc/default/
 	systemctl daemon-reload
-	systemctl start pymap@default
-	systemctl enable pymap@default
+	systemctl start pymap@default.service
+	systemctl enable pymap@default.service
 }
 
 if [ "$(id -u)" != "0" ]; then

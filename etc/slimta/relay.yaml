@@ -23,8 +23,9 @@ queue:
 
 relay:
   inbound: &relay_inbound
-    type: lmtp
-    ehlo_as: '{fqdn}'
+    type: pipe
+    args: [pymap-admin, --socket, /var/run/pymap-default.sock,
+           append, --from, '{sender}', '{recipient}']
   outbound: &relay_outbound
     type: mx
     ehlo_as: '{fqdn}'

@@ -4,6 +4,8 @@ Description = Slim Mail Transfer Agent - %I
 [Service]
 Type = forking
 PIDFile = /var/run/slimta-%i.pid
+EnvironmentFile = /etc/default/slimta-%i
+PassEnvironment = PATH
 ExecStart = /opt/slimta/bin/slimta --daemon \
  --config /etc/slimta/%i.yaml \
  --pid-file /var/run/slimta-%i.pid
