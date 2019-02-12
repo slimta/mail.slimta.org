@@ -4,10 +4,10 @@ slimta-bootstrap
 Provides config files and bootstrap scripts for slimta mailservers. This process
 is used by `mail.slimta.org` and provides:
 
-* slimta SMTP inbound (port 25) and outbound (port 587)
-* dovecot IMAP (port 143)
-* spamassassin mail filtering
-* letsencrypt SSL certificates with auto-renew
+* [slimta][1] SMTP inbound (port 25) and outbound (port 587)
+* [pymap][2] IMAP (port 143)
+* [spamassassin][3] mail filtering
+* [letsencrypt][4] SSL certificates with auto-renew
 
 ... and more. Check out `bootstrap.sh` for details.
 
@@ -62,3 +62,8 @@ data:
     --headers JSON  Add the JSON dictionary of header to the message
     --verp DOMAIN   VERP-encode the address on the given domain
 ```
+
+[1]: https://slimta.org/en/latest/
+[2]: https://github.com/icgood/pymap
+[3]: https://spamassassin.apache.org/
+[4]: https://letsencrypt.org/
