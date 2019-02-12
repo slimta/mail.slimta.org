@@ -112,9 +112,9 @@ function deploy_cert {
     # - CHAINFILE
     #   The path of the file containing the intermediate certificate(s).
 
-    systemctl restart dovecot
     systemctl restart slimta@edge.service
     systemctl restart slimta@relay.service
+    systemctl restart pymap@default.service
 }
 
 function unchanged_cert {
