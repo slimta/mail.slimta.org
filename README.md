@@ -11,6 +11,8 @@ is used by `mail.slimta.org` and provides:
 
 ... and more. Check out `bootstrap.sh` for details.
 
+Requires: Debian ([_buster_][5] or _testing_ for Python 3.7+)
+
 ### Usage
 
 _*NOTE*_: It's very important that you configure the FQDN of your machine
@@ -67,3 +69,4 @@ data:
 [2]: https://github.com/icgood/pymap
 [3]: https://spamassassin.apache.org/
 [4]: https://letsencrypt.org/
+[5]: https://www.debian.org/releases/buster/
