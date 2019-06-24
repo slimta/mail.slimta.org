@@ -26,7 +26,10 @@ rules:
     banner: '{fqdn} ESMTP Mail Submission Agent'
     dnsbl: zen.spamhaus.org
     lookup_credentials: *lookup_addresses
-  outbound_unrestricted: &rules_outbound_unrestricted
+  inbound_local: &rules_inbound_local
+    banner: '{fqdn} ESMTP Mail Deliver Agent'
+    lookup_recipients: *lookup_addresses
+  outbound_local: &rules_outbound_local
     banner: '{fqdn} ESMTP Mail Submission Agent'
 
 tls:
@@ -39,7 +42,7 @@ edge:
     type: smtp
     queue: inbound
     listener:
-      port: 25
+      port: 1025
     proxyprotocol: true
     tls: *tls_main
     rules: *rules_inbound
@@ -51,13 +54,20 @@ edge:
     proxyprotocol: true
     tls: *tls_main
     rules: *rules_outbound
-  outbound_unrestricted: &edge_outbound_unrestricted
+  inbound_local: &edge_inbound_local
+    type: smtp
+    queue: inbound
+    listener:
+      interface: '127.0.0.1'
+      port: 25
+    rules: *rules_inbound_local
+  outbound_local: &edge_outbound_local
     type: smtp
     queue: outbound
     listener:
       interface: '127.0.0.1'
       port: 1587
-    rules: *rules_outbound_unrestricted
+    rules: *rules_outbound_local
 
 queue:
   inbound: &queue_inbound

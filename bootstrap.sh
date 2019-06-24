@@ -20,7 +20,6 @@ function setup_python {
 		apt-get install -y \
 			python3.7 \
 			python3.7-venv \
-			python3-virtualenv \
 			python3-wheel
 	fi
 	if ! dpkg -s python2.7 > /dev/null; then
@@ -56,8 +55,9 @@ function setup_letsencrypt {
 	fi
 	if ! /opt/letsencrypt/bin/python -V; then
 		python3 -m venv /opt/letsencrypt
+		/opt/letsencrypt/bin/pip install -U pip wheel
 	fi
-	/opt/letsencrypt/bin/pip install -U dns-lexicon
+	/opt/letsencrypt/bin/pip install -U pip wheel dns-lexicon
 	cp -u $bootstrap_dir/etc/letsencrypt/letsencrypt-cron /opt/letsencrypt/bin/
 	cp -u $bootstrap_dir/etc/letsencrypt/lexicon-hook.sh /opt/letsencrypt/bin/
 	curl -o /opt/letsencrypt/bin/dehydrated $dehydrated_url
@@ -88,14 +88,19 @@ function setup_spamassassin {
 
 function setup_slimta {
 	if ! /opt/slimta/bin/python -V; then
-		python3 -m virtualenv -p python2.7 /opt/slimta
+		python3 -m venv /opt/slimta
+		/opt/slimta/bin/pip install -U pip wheel
 	fi
 	/opt/slimta/bin/pip install -U pip wheel \
 		pysasl \
-		python-slimta \
-		python-slimta-spf \
-		python-slimta-redisstorage \
-		slimta
+		git+https://github.com/slimta/python-slimta.git@master \
+		git+https://github.com/slimta/python-slimta-spf.git@master \
+		git+https://github.com/slimta/python-slimta-redisstorage.git@master \
+		git+https://github.com/slimta/slimta.git@master
+		# python-slimta \
+		# python-slimta-spf \
+		# python-slimta-redisstorage \
+		# slimta
 	mkdir -p /etc/slimta
 	mkdir -p /var/log/slimta
 	cp -f $bootstrap_dir/etc/slimta/slimta@.service /etc/systemd/system/
@@ -120,6 +125,7 @@ function setup_pymap {
 	fi
 	if ! /opt/pymap/bin/python -V; then
 		python3 -m venv /opt/pymap
+		/opt/pymap/bin/pip install -U pip wheel
 	fi
 	/opt/pymap/bin/pip install -U pip wheel \
 		pysasl \
