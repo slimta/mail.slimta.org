@@ -139,7 +139,7 @@ function setup_pymap {
 		pymap
 	cp -f $bootstrap_dir/etc/pymap/pymap@.service /etc/systemd/system/
 	cp -f $bootstrap_dir/etc/pymap/pymap@.socket /etc/systemd/system/
-	cp -f $bootstrap_dir/etc/pymap/pymap-default /etc/default/
+	cp -f $bootstrap_dir/etc/pymap/pymap.args /etc/pymap.default
 	systemctl daemon-reload
 	systemctl start pymap@default.service
 	systemctl enable pymap@default.service

@@ -4,11 +4,14 @@ Wants = pymap@%i.socket
 
 [Service]
 Type = notify
-EnvironmentFile = /etc/default/pymap-%i
+Environment = \
+ ADMIN_SOCK=/var/run/pymap-%i.sock \
+ PYMAP_ARGS=@/etc/pymap.%i
+EnvironmentFile = -/etc/default/pymap-%i
 ExecStart = /opt/pymap/bin/pymap \
- --admin-socket /var/run/pymap-%i.sock \
+ --admin-socket $ADMIN_SOCK \
  $PYMAP_ARGS
-ExecStopPost = rm -f /var/run/pymap-%i.sock
+ExecStopPost = rm -f $ADMIN_SOCK
 
 [Install]
 WantedBy = multi-user.target
