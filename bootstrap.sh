@@ -128,6 +128,7 @@ function setup_pymap {
 		/opt/pymap/bin/pip install -U pip wheel
 	fi
 	/opt/pymap/bin/pip install -U pip wheel \
+		typing-extensions \
 		pysasl \
 		aioredis \
 		hiredis \
