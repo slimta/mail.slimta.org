@@ -55,7 +55,7 @@ function setup_letsencrypt {
 	fi
 	if ! /opt/letsencrypt/bin/python -V; then
 		python3 -m venv /opt/letsencrypt
-		/opt/letsencrypt/bin/pip install -U pip wheel
+		/opt/letsencrypt/bin/pip install -U pip wheel setuptools
 	fi
 	/opt/letsencrypt/bin/pip install -U pip wheel dns-lexicon
 	cp -u $bootstrap_dir/etc/letsencrypt/letsencrypt-cron /opt/letsencrypt/bin/
@@ -91,7 +91,7 @@ function setup_slimta {
 		python3 -m venv /opt/slimta
 		/opt/slimta/bin/pip install -U pip wheel
 	fi
-	/opt/slimta/bin/pip install -U pip wheel \
+	/opt/slimta/bin/pip install -U pip wheel setuptools \
 		pysasl \
 		git+https://github.com/slimta/python-slimta.git@master \
 		git+https://github.com/slimta/python-slimta-spf.git@master \
@@ -127,7 +127,7 @@ function setup_pymap {
 		python3 -m venv /opt/pymap
 		/opt/pymap/bin/pip install -U pip wheel
 	fi
-	/opt/pymap/bin/pip install -U pip wheel \
+	/opt/pymap/bin/pip install -U pip wheel setuptools \
 		typing-extensions \
 		pysasl \
 		aioredis \
