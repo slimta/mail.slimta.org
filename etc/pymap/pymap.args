@@ -10,7 +10,7 @@ slimta
 mail
 redis
 --prefix
-pymap:
+pymap
 --users-key
 slimta:address:{name}
 --users-json
