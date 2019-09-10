@@ -11,8 +11,8 @@ mail
 redis
 --prefix
 pymap
---users-key
-slimta:address:{name}
+--users-prefix
+slimta:address
 --users-json
 --select
 1
