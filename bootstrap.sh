@@ -123,7 +123,7 @@ function setup_pymap {
 			python3-dev \
 			libsystemd-dev
 	fi
-	instance=default
+	instance=${PYMAP_INSTANCE:-default}
 	venv_dir=/opt/pymap-$instance
 	if ! $venv_dir/bin/python -V; then
 		python3 -m venv $venv_dir
@@ -144,6 +144,8 @@ function setup_pymap {
 	cp -f $bootstrap_dir/etc/pymap/pymap@.socket /etc/systemd/system/
 	cp -f $bootstrap_dir/etc/pymap/pymap-defaults /etc/default/pymap
 	cp -f $bootstrap_dir/etc/pymap/pymap.args /etc/
+	rm -f /opt/pymap
+	ln -s $venv_dir /opt/pymap
 	systemctl daemon-reload
 	systemctl start pymap@$instance.service
 	systemctl enable pymap@$instance.service
