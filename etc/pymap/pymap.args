@@ -1,5 +1,7 @@
 --debug
 --systemd-sockets
+--admin-socket
+$PYMAP_ADMIN_SOCK
 --cert
 /etc/ssl/certs/local/fullchain.pem
 --key
@@ -12,7 +14,7 @@ redis
 --prefix
 pymap
 --users-prefix
-slimta:address
+slimta/address
 --users-json
 --select
-1
+$PYMAP_SELECT

@@ -123,11 +123,13 @@ function setup_pymap {
 			python3-dev \
 			libsystemd-dev
 	fi
-	if ! /opt/pymap/bin/python -V; then
-		python3 -m venv /opt/pymap
-		/opt/pymap/bin/pip install -U pip wheel
+	instance=default
+	venv_dir=/opt/pymap-$instance
+	if ! $venv_dir/bin/python -V; then
+		python3 -m venv $venv_dir
+		$venv_dir/bin/pip install -U pip wheel
 	fi
-	/opt/pymap/bin/pip install -U pip wheel setuptools \
+	$venv_dir/bin/pip install -U pip wheel setuptools \
 		typing-extensions \
 		pysasl \
 		aioredis \
@@ -140,10 +142,11 @@ function setup_pymap {
 		pymap
 	cp -f $bootstrap_dir/etc/pymap/pymap@.service /etc/systemd/system/
 	cp -f $bootstrap_dir/etc/pymap/pymap@.socket /etc/systemd/system/
-	cp -f $bootstrap_dir/etc/pymap/pymap.args /etc/pymap.default
+	cp -f $bootstrap_dir/etc/pymap/pymap-defaults /etc/default/pymap
+	cp -f $bootstrap_dir/etc/pymap/pymap.args /etc/
 	systemctl daemon-reload
-	systemctl start pymap@default.service
-	systemctl enable pymap@default.service
+	systemctl start pymap@$instance.service
+	systemctl enable pymap@$instance.service
 }
 
 if [ "$(id -u)" != "0" ]; then

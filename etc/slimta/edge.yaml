@@ -9,10 +9,10 @@ process:
 
 lookup:
   addresses: &lookup_addresses
-    key_template: 'slimta:address:{address}'
+    key_template: 'slimta/address/{address}'
     type: 'redis'
   domains: &lookup_domains
-    key_template: 'slimta:address:{domain}'
+    key_template: 'slimta/address/{domain}'
     type: 'redis'
 
 rules:
@@ -72,7 +72,7 @@ edge:
 queue:
   inbound: &queue_inbound
     type: redis
-    prefix: 'slimta:inbound:'
+    prefix: 'slimta/inbound/'
     policies:
       - type: add_date_header
       - type: add_messageid_header
@@ -83,7 +83,7 @@ queue:
         lookup: *lookup_domains
   outbound: &queue_outbound
     type: redis
-    prefix: 'slimta:outbound:'
+    prefix: 'slimta/outbound/'
     policies:
       - type: add_date_header
       - type: add_messageid_header

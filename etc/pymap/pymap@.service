@@ -5,12 +5,11 @@ Wants = pymap@%i.socket
 [Service]
 Type = notify
 Environment = \
- ADMIN_SOCK=/var/run/pymap-%i.sock \
- PYMAP_ARGS=@/etc/pymap.%i
+ PYMAP_ADMIN_SOCK=/var/run/pymap-%i.sock \
+ PYMAP_ARGS=@/etc/pymap.args
+EnvironmentFile = -/etc/default/pymap
 EnvironmentFile = -/etc/default/pymap-%i
-ExecStart = /opt/pymap/bin/pymap \
- --admin-socket $ADMIN_SOCK \
- $PYMAP_ARGS
+ExecStart = /opt/pymap-%i/bin/pymap $PYMAP_ARGS
 ExecStopPost = rm -f $ADMIN_SOCK
 
 [Install]
