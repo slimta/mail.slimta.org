@@ -151,7 +151,9 @@ function setup_pymap {
 	ln -s $venv_dir /opt/pymap
 	systemctl daemon-reload
 	systemctl start pymap@$pymap_instance
-	systemctl enable pymap@$pymap_instance
+	if [ "$pymap_instance" = "default" ]; then
+		systemctl enable pymap@$pymap_instance
+	fi
 }
 
 if [ "$(id -u)" != "0" ]; then
