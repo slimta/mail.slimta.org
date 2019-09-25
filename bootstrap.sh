@@ -179,6 +179,6 @@ for act in "${actions[@]}"; do
 	$act
 done
 
-systemctl restart slimta@$slimta_edge_service
-systemctl restart slimta@$slimta_relay_service
+systemctl restart slimta@$slimta_edge_instance
+systemctl restart slimta@$slimta_relay_instance
 systemctl restart pymap@$pymap_instance
