@@ -10,7 +10,7 @@ Environment = \
 EnvironmentFile = -/etc/default/pymap
 EnvironmentFile = -/etc/default/pymap-%i
 ExecStart = /opt/pymap-%i/bin/pymap $PYMAP_ARGS
-ExecStopPost = rm -f $ADMIN_SOCK
+ExecStopPost = rm -f $PYMAP_ADMIN_SOCK
 
 [Install]
 WantedBy = multi-user.target

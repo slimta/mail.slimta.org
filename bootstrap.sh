@@ -7,6 +7,10 @@ bootstrap_dir=$(dirname $bootstrap)
 fqdn=$(hostname --fqdn)
 workdir=$(mktemp -d)
 
+slimta_edge_instance=${SLIMTA_EDGE_INSTANCE:-edge}
+slimta_relay_instance=${SLIMTA_RELAY_INSTANCE:-relay}
+pymap_instance=${PYMAP_INSTANCE:-default}
+
 trap "rm -rf $workdir" EXIT INT
 
 function setup_user {
@@ -108,10 +112,10 @@ function setup_slimta {
 	cp -f $bootstrap_dir/etc/slimta/slimta-relay /etc/default/
 	cp -f $bootstrap_dir/etc/slimta/*.yaml /etc/slimta/
 	systemctl daemon-reload
-	systemctl start slimta@edge
-	systemctl start slimta@relay
-	systemctl enable slimta@edge
-	systemctl enable slimta@relay
+	systemctl start slimta@$slimta_edge_instance
+	systemctl start slimta@$slimta_relay_instance
+	systemctl enable slimta@$slimta_edge_instance
+	systemctl enable slimta@$slimta_relay_instance
 }
 
 function setup_pymap {
@@ -123,8 +127,7 @@ function setup_pymap {
 			python3-dev \
 			libsystemd-dev
 	fi
-	instance=${PYMAP_INSTANCE:-default}
-	venv_dir=/opt/pymap-$instance
+	venv_dir=/opt/pymap-$pymap_instance
 	if ! $venv_dir/bin/python -V; then
 		python3 -m venv $venv_dir
 		$venv_dir/bin/pip install -U pip wheel
@@ -147,8 +150,8 @@ function setup_pymap {
 	rm -f /opt/pymap
 	ln -s $venv_dir /opt/pymap
 	systemctl daemon-reload
-	systemctl start pymap@$instance.service
-	systemctl enable pymap@$instance.service
+	systemctl start pymap@$pymap_instance
+	systemctl enable pymap@$pymap_instance
 }
 
 if [ "$(id -u)" != "0" ]; then
@@ -174,6 +177,6 @@ for act in "${actions[@]}"; do
 	$act
 done
 
-systemctl restart slimta@edge
-systemctl restart slimta@relay
-systemctl restart pymap@default
+systemctl restart slimta@$slimta_edge_service
+systemctl restart slimta@$slimta_relay_service
+systemctl restart pymap@$pymap_instance
