@@ -59,9 +59,8 @@ function setup_letsencrypt {
 	fi
 	if ! /opt/letsencrypt/bin/python -V; then
 		python3 -m venv /opt/letsencrypt
-		/opt/letsencrypt/bin/pip install -U pip wheel setuptools
 	fi
-	/opt/letsencrypt/bin/pip install -U pip wheel dns-lexicon
+	/opt/letsencrypt/bin/pip install -U pip wheel setuptools dns-lexicon
 	cp -u $bootstrap_dir/etc/letsencrypt/letsencrypt-cron /opt/letsencrypt/bin/
 	cp -u $bootstrap_dir/etc/letsencrypt/lexicon-hook.sh /opt/letsencrypt/bin/
 	curl -o /opt/letsencrypt/bin/dehydrated $dehydrated_url
@@ -93,7 +92,6 @@ function setup_spamassassin {
 function setup_slimta {
 	if ! /opt/slimta/bin/python -V; then
 		python3 -m venv /opt/slimta
-		/opt/slimta/bin/pip install -U pip wheel
 	fi
 	/opt/slimta/bin/pip install -U pip wheel setuptools \
 		pysasl \
@@ -130,20 +128,12 @@ function setup_pymap {
 	venv_dir=/opt/pymap-$pymap_instance
 	if ! $venv_dir/bin/python -V; then
 		python3 -m venv $venv_dir
-		$venv_dir/bin/pip install -U pip wheel
 	fi
 	$venv_dir/bin/pip install -U pip wheel setuptools \
-		typing-extensions \
-		pysasl \
-		aioredis \
 		hiredis \
-		msgpack \
-		grpclib \
-		protobuf \
-		sievelib \
 		passlib \
 		systemd-python \
-		pymap
+		'pymap[redis,sieve,grpc]'
 	cp -f $bootstrap_dir/etc/pymap/pymap@.service /etc/systemd/system/
 	cp -f $bootstrap_dir/etc/pymap/pymap@.socket /etc/systemd/system/
 	cp -f $bootstrap_dir/etc/pymap/pymap-defaults /etc/default/pymap
