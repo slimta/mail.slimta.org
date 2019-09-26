@@ -137,6 +137,7 @@ function setup_pymap {
 		pysasl \
 		aioredis \
 		hiredis \
+		msgpack \
 		grpclib \
 		protobuf \
 		sievelib \
