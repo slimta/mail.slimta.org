@@ -94,7 +94,6 @@ function setup_slimta {
 		python3 -m venv /opt/slimta
 	fi
 	/opt/slimta/bin/pip install -U pip wheel setuptools \
-		pysasl \
 		git+https://github.com/slimta/python-slimta.git@master \
 		git+https://github.com/slimta/python-slimta-spf.git@master \
 		git+https://github.com/slimta/python-slimta-redisstorage.git@master \
