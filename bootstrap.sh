@@ -19,11 +19,12 @@ function setup_user {
 }
 
 function setup_python {
-	if ! dpkg -s python3.7 > /dev/null; then
+	if ! dpkg -s python3.8 > /dev/null; then
 		apt-get update
 		apt-get install -y \
-			python3.7 \
-			python3.7-venv \
+			python3.8 \
+			python3.8-dev \
+			python3.8-venv \
 			python3-wheel
 	fi
 	if ! dpkg -s python2.7 > /dev/null; then
@@ -58,7 +59,7 @@ function setup_letsencrypt {
 			curl
 	fi
 	if ! /opt/letsencrypt/bin/python -V; then
-		python3 -m venv /opt/letsencrypt
+		python3.8 -m venv /opt/letsencrypt
 	fi
 	/opt/letsencrypt/bin/pip install -U pip wheel setuptools dns-lexicon
 	cp -u $bootstrap_dir/etc/letsencrypt/letsencrypt-cron /opt/letsencrypt/bin/
@@ -91,7 +92,7 @@ function setup_spamassassin {
 
 function setup_slimta {
 	if ! /opt/slimta/bin/python -V; then
-		python3 -m venv /opt/slimta
+		python3.8 -m venv /opt/slimta
 	fi
 	/opt/slimta/bin/pip install -U pip wheel setuptools \
 		git+https://github.com/slimta/python-slimta.git@master \
@@ -121,12 +122,11 @@ function setup_pymap {
 		apt-get install -y \
 			gcc \
 			pkg-config \
-			python3-dev \
 			libsystemd-dev
 	fi
 	venv_dir=/opt/pymap-$pymap_instance
 	if ! $venv_dir/bin/python -V; then
-		python3 -m venv $venv_dir
+		python3.8 -m venv $venv_dir
 	fi
 	$venv_dir/bin/pip install -U pip wheel setuptools \
 		hiredis \
